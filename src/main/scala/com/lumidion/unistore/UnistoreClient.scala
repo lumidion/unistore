@@ -1,4 +1,10 @@
-package com.lumidion.unistore.config
+package com.lumidion.unistore
+
+import com.lumidion.unistore.clients.{AwsS3Client, LocalStorageClient}
+import com.lumidion.unistore.config.{AwsS3StorageConfig, LocalStorageConfig, StorageConfig}
+import com.lumidion.unistore.models.errors.{ConfigError, CredentialsRetrievalError, UnistoreError}
+import com.lumidion.unistore.utils.Extensions.ZIOOps.*
+import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
 
 import zio.aws.core.config.AwsConfig
 import zio.aws.netty.NettyHttpClient
@@ -6,19 +12,16 @@ import zio.aws.sts.model.AssumeRoleRequest
 import zio.aws.sts.Sts
 import zio.ZIO
 
-import com.lumidion.unistore.models.errors.{UnistoreError, ConfigError, CredentialsRetrievalError}
-import com.lumidion.unistore.utils.Extensions.ZIOOps.*
-import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
-
-final case class UnistoreConfig(
+class UnistoreClient(
     awsS3BucketName: Option[String] = None,
     awsS3ObjectKey: Option[String] = None,
     awsAccessKeyId: Option[String] = None,
     awsSecretAccessKey: Option[String] = None,
     awsIamAssumeRoleRequest: Option[AssumeRoleRequest] = None,
-    localFilePath: Option[String] = None
+    localFilePath: Option[String] = None,
+    stringEncoding: Option[String] = None
 ) {
-  def toStorageConfig: ZIO[Any, UnistoreError, Option[StorageConfig]] =
+  private def toStorageConfig: ZIO[Any, UnistoreError, Option[StorageConfig]] =
     (
       awsS3BucketName,
       awsS3ObjectKey,
@@ -73,4 +76,24 @@ final case class UnistoreConfig(
           )
         )
     }
+
+  def loadFileAsBytes: ZIO[Any, UnistoreError, Option[Array[Byte]]] =
+    for {
+      storageConf <- toStorageConfig
+      clientOpt = storageConf.map {
+        case finalConf: AwsS3StorageConfig => new AwsS3Client(finalConf)
+        case finalConf: LocalStorageConfig => new LocalStorageClient(finalConf)
+      }
+      byteArrayOpt <- clientOpt.fold(ZIO.succeed(None))(_.loadFile.asSome)
+    } yield byteArrayOpt
+
+  def loadFileAsString: ZIO[Any, UnistoreError, Option[String]] =
+    for {
+      fileOpt <- loadFileAsBytes
+      res = fileOpt.map { fileBytes =>
+        stringEncoding
+          .map(new String(fileBytes, _))
+          .getOrElse(String(fileBytes))
+      }
+    } yield res
 }

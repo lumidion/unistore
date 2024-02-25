@@ -1,5 +1,10 @@
 package com.lumidion.unistore.clients
 
+import com.lumidion.unistore.config.AwsS3StorageConfig
+import com.lumidion.unistore.models.errors.{ConfigError, FileRetrievalError, UnistoreError}
+import com.lumidion.unistore.utils.Extensions.ZIOOps.*
+import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
+
 import zio.{ZIO, ZLayer}
 import zio.aws.core.config.{AwsConfig, ClientCustomization}
 import zio.aws.netty.NettyHttpClient
@@ -7,11 +12,6 @@ import zio.aws.s3.model.GetObjectRequest
 import zio.aws.s3.S3
 import zio.aws.s3.S3.getObject
 import zio.stream.ZSink
-
-import com.lumidion.unistore.config.AwsS3StorageConfig
-import com.lumidion.unistore.models.errors.{UnistoreError, ConfigError, FileRetrievalError}
-import com.lumidion.unistore.utils.Extensions.ZIOOps.*
-import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
 
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder
 

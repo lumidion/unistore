@@ -1,13 +1,13 @@
 package com.lumidion.unistore
 
+import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
+
 import zio.aws.core.AwsError
 import zio.aws.s3.model.primitives.{BucketName, ObjectKey}
 import zio.aws.sts.model.AssumeRoleRequest
 import zio.aws.sts.Sts
 import zio.aws.sts.Sts.assumeRole
 import zio.ZIO
-
-import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
 
 import software.amazon.awssdk.auth.credentials.{
   AwsBasicCredentials,
