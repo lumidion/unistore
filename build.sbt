@@ -1,6 +1,7 @@
 import xerial.sbt.Sonatype.sonatypeCentral
 
 addCommandAlias("format", "scalafmtAll; scalafmtSbt")
+addCommandAlias("sontest", "reload; clean; publishSigned; sonatypeBundleRelease")
 
 //ThisBuild / version := "0.1.0-SNAPSHOT"
 
