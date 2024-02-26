@@ -1,8 +1,8 @@
 package com.lumidion.unistore.utils
 
-import zio.{Tag, ZIO, ZLayer}
-
 import com.lumidion.unistore.models.errors.UnistoreError
+
+import zio.{Tag, ZIO, ZLayer}
 
 private[unistore] object Extensions {
   object ZIOOps {
