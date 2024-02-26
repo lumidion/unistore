@@ -8,7 +8,7 @@ inThisBuild(
   List(
     name := "unistore",
     organization := "com.lumidion",
-    homepage := Some(url("https://github.com/lumidion/zio-unistore")),
+    homepage := Some(url("https://github.com/lumidion/unistore")),
     // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
@@ -38,6 +38,7 @@ lazy val root = (project in file("."))
 //    ),
 //    version := "0.1.0",
 //    publishMavenStyle := true,
+    name := "unistore",
     scalaVersion := scala3.value,
     scalacOptions ++= Seq(
       "-Werror",
