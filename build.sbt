@@ -1,8 +1,7 @@
-import xerial.sbt.Sonatype.sonatypeCentral
+import xerial.sbt.Sonatype.sonatypeCentralHost
 
 addCommandAlias("format", "scalafmtAll; scalafmtSbt")
 addCommandAlias("sontest", "reload; clean; publishSigned; sonatypeBundleRelease")
-addCommandAlias("help", "clean")
 
 //ThisBuild / version := "0.1.0-SNAPSHOT"
 
@@ -21,7 +20,7 @@ inThisBuild(
         url = url("https://www.lumidion.com/about")
       )
     ),
-    sonatypeCredentialHost := sonatypeCentral
+    sonatypeCredentialHost := sonatypeCentralHost
   )
 )
 
