@@ -1,7 +1,7 @@
 package com.lumidion.unistore.models
 
 package object errors {
-  sealed trait UnistoreError {
+  sealed trait UnistoreError extends Exception {
     val errorName: String
     val ex: Exception
   }
