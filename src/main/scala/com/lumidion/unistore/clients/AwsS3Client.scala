@@ -1,9 +1,9 @@
 package com.lumidion.unistore.clients
 
+import com.lumidion.unistore.clients.AwsS3Client.defaultRegion
 import com.lumidion.unistore.config.AwsS3StorageConfig
 import com.lumidion.unistore.models.errors.{ConfigError, FileRetrievalError, UnistoreError}
-import com.lumidion.unistore.utils.Extensions.ZIOOps.*
-import com.lumidion.unistore.utils.Extensions.ZLayerOps.*
+import com.lumidion.unistore.utils.Extensions.{ZIOOps, ZLayerOps}
 
 import zio.{ZIO, ZLayer}
 import zio.aws.core.config.{AwsConfig, ClientCustomization}
@@ -14,6 +14,7 @@ import zio.aws.s3.S3.getObject
 import zio.stream.ZSink
 
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder
+import software.amazon.awssdk.regions.Region
 
 private[unistore] class AwsS3Client(config: AwsS3StorageConfig) extends StorageClient {
 
@@ -23,7 +24,8 @@ private[unistore] class AwsS3Client(config: AwsS3StorageConfig) extends StorageC
         AwsConfig.customized(new ClientCustomization {
           override def customize[Client, Builder <: AwsClientBuilder[Builder, Client]](
               builder: Builder
-          ): Builder = builder.credentialsProvider(provider)
+          ): Builder =
+            builder.credentialsProvider(provider).region(config.region.getOrElse(defaultRegion))
         })
       }
       .getOrElse(AwsConfig.default)
@@ -46,4 +48,8 @@ private[unistore] class AwsS3Client(config: AwsS3StorageConfig) extends StorageC
     }
       .provideLayer(layer)
   }
+}
+
+private[unistore] object AwsS3Client {
+  val defaultRegion: Region = Region.US_WEST_1
 }
