@@ -14,7 +14,7 @@ inThisBuild(
         email = "david@lumidion.com",
         url = url("https://www.lumidion.com/about")
       )
-    ),
+    )
   )
 )
 
